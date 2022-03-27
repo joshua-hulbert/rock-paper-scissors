@@ -12,47 +12,73 @@ function computerPlay() {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
-    let playerSelectionFormatted = playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1).toLowerCase();
+function playRound(e) {
+    let result; 
+    let computerSelection;
+    let playerSelection;
 
-    if (playerSelectionFormatted == computerSelection) {
-        return "Tie";
-    } else if ((playerSelectionFormatted == "Rock" && computerSelection == "Scissors") ||
-              (playerSelectionFormatted == "Scissors" && computerSelection == "Paper") ||
-              (playerSelectionFormatted == "Paper" && computerSelection == "Rock")) {
-        return "Win";
+    numRounds++;
+
+    computerSelection = computerPlay();
+    playerSelection = this.textContent;
+
+    if (playerSelection == computerSelection) {
+        result =  "Tie";
+    } else if ((playerSelection == "Rock" && computerSelection == "Scissors") ||
+              (playerSelection == "Scissors" && computerSelection == "Paper") ||
+              (playerSelection == "Paper" && computerSelection == "Rock")) {
+        result =  "Win";
     } else {
-        return "Lose";
+        result =  "Lose";
     }
+
+    game(result);
 }
 
-function game() {
-    let winCount = 0;
-    let loseCount = 0;
-    let tieCount = 0;
+function game(roundResult) {
+    const resultsDiv = document.querySelector('.results');
 
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Rock, Paper, or Scissors");
-        let result = playRound(playerSelection, computerPlay());
-        if (result == "Tie") {
-            tieCount++;
-            console.log("It's a tie this round!");
-        } else if (result == "Win") {
-            winCount++;
-            console.log("You win this round!");
+    if (numRounds == 0) {
+        resultsDiv.textContent = '';
+    }
+
+    if (roundResult == "Tie") {
+        tieCount++;
+        resultsDiv.textContent = `Ties = ${tieCount} Wins = ${winCount} Losses = ${loseCount}`;
+    } else if (roundResult == "Win") {
+        winCount++;
+        resultsDiv.textContent = `Ties = ${tieCount} Wins = ${winCount} Losses = ${loseCount}`;
+    } else {
+        loseCount++;
+        resultsDiv.textContent = `Ties = ${tieCount} Wins = ${winCount} Losses = ${loseCount}`;
+    }
+
+    if (numRounds == 5) {
+        numRounds = 0;
+
+        if (winCount > loseCount) {
+            resultsDiv.textContent += ' YOU WIN THE GAME!';
+        } else if (loseCount > winCount) {
+            resultsDiv.textContent += ' YOU LOSE THE GAME!';
         } else {
-            loseCount++;
-            console.log("You lose this round!");
+            resultsDiv.textContent += ' THE GAME WAS A TIE!';
         }
-    }
 
-    if (winCount > loseCount) {
-        console.log("You won the game!!!");
-    } else if (loseCount > winCount) {
-        console.log("You lost the game!!!");
-    } else {
-        console.log("This game was a tie!");
+        winCount = 0;
+        loseCount = 0
+        tieCount = 0;
     }
 }
 
-game();
+let tieCount = 0;
+let winCount = 0; 
+let loseCount = 0;
+let numRounds = 0;
+
+const rockButton = document.querySelector('#rock-button');
+const paperButton = document.querySelector('#paper-button');
+const scissorsButton = document.querySelector('#scissors-button');
+
+rockButton.addEventListener('click', playRound);
+paperButton.addEventListener('click', playRound);
+scissorsButton.addEventListener('click', playRound);
